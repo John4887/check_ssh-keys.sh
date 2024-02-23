@@ -39,3 +39,21 @@ As always, check your nagios configuration:
 /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
 ```
 Then restart Nagios service and that's all!
+
+### What to do if a change happend?
+
+If there is a ssh key and/or a fingerprint detected, the status will go to WARNING in Nagios and it will not go again to OK status until you have validated the change manually! Why? Because otherwise, it's a non-sense. If the script inform there is a change, you HAVE to see it. Without manual control, there would be no way to return to an OK state unless the script overwrites the status itself, which is of course completely illogical.
+
+But relax, it's simple. You have the choice. Log on to the relevant server and run the following command from the directory where the script is located:
+
+```shell
+sudo -u nagios ./check_ssh_keys.sh --update
+```
+
+This command will update the state file with the current situation and the status will go back to OK on your Nagios console.
+
+You can also do it in the web interface of the NCPA agent. Just go to https://your-server-fqdn:5693/ and login with your token. Go to the API tab select in the API Endpoint on the left "Plugins" and the plugin "check-ssh_keys.sh".
+
+In the "Plugin Arguments" field, just type : --update and click reload. This will update the status file and the status will go back to OK also.
+
+Again, you are free to adapt the script if you want to avoid this and for example set a time condition to automatically regenerate base state file if you want to have to all the process in a full automatic way. I do not personally recommend it.
